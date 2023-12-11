@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 
 /* Challenge */
 router.get('/cool/', function(req, res, next) {
-  res.send("You're so cool");
+  res.send("You're wicked cool");
 });
 
 module.exports = router;
