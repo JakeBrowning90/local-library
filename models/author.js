@@ -40,14 +40,19 @@ AuthorSchema.virtual("lifespan").get(function () {
   if (this.date_of_death) {
     date_of_death_formatted = DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED);
   }
-  
-  // let date_of_birth_formatted = DateTime.fromJSDate(this.date_of_birth).toLocaleString(DateTime.DATE_MED);
-  // let date_of_death_formatted = DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED);
-
-
 
   let lifespan = `${date_of_birth_formatted} - ${date_of_death_formatted}`;
   return lifespan;
+});
+
+// Virtual for DOB in yyyy_mm_dd format
+AuthorSchema.virtual("date_of_birth_yyyy_mm_dd").get(function () {
+  return DateTime.fromJSDate(this.date_of_birth).toISODate();
+});
+
+// Virtual for DOD in yyyy_mm_dd format
+AuthorSchema.virtual("date_of_death_yyyy_mm_dd").get(function () {
+  return DateTime.fromJSDate(this.date_of_death).toISODate();
 });
 
 // Export model
