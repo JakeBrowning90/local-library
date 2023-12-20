@@ -1,12 +1,13 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 const catalogRouter = require('./routes/catalog'); //Import routes for "catalog" area of site
+
 const compression = require("compression");
 const helmet = require("helmet");
 
@@ -31,11 +32,6 @@ mongoose.set("strictQuery", false);
 const dev_db_url =
   "mongodb+srv://JakeBrowning90:MyCluster02023Jake@cluster0.wzkqxnd.mongodb.net/local_library?retryWrites=true&w=majority";
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
-
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
 
 main().catch((err) => console.log(err));
 async function main() {
