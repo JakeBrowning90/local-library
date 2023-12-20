@@ -22,20 +22,11 @@ const limiter = RateLimit({
 // Apply rate limiter to all requests
 app.use(limiter);
 
-// Add helmet to the middleware chain.
-// Set CSP headers to allow our Bootstrap and Jquery to be served
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
-    },
-  }),
-);
-// const mongoDB = "mongodb+srv://JakeBrowning90:MyCluster02023Jake@cluster0.wzkqxnd.mongodb.net/local_library?retryWrites=true&w=majority";
-
 // Set up mongoose connection
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
+
+// const mongoDB = "mongodb+srv://JakeBrowning90:MyCluster02023Jake@cluster0.wzkqxnd.mongodb.net/local_library?retryWrites=true&w=majority";
 
 const dev_db_url =
   "mongodb+srv://JakeBrowning90:MyCluster02023Jake@cluster0.wzkqxnd.mongodb.net/local_library?retryWrites=true&w=majority";
@@ -59,6 +50,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Add helmet to the middleware chain.
+// Set CSP headers to allow our Bootstrap and Jquery to be served
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+    },
+  }),
+);
 
 app.use(compression()); // Compress all routes
 
