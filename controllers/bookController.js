@@ -2,8 +2,9 @@ const Book = require("../models/book");
 const Author = require("../models/author");
 const Genre = require("../models/genre");
 const BookInstance = require("../models/bookinstance");
-const asyncHandler = require("express-async-handler");
+
 const { body, validationResult } = require("express-validator");
+const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async (req, res, next) => {
   // Get details of books, book instances, authors, and genre counts (in parallel)
@@ -130,7 +131,7 @@ exports.book_create_post = [
 
       // Mark our selected genres as checked.
       for (const genre of allGenres) {
-        if (book.genre.includes(genre._id)) {
+        if (book.genre.includes(genre._id) > -1) {
           genre.checked = "true";
         }
       }
@@ -153,8 +154,8 @@ exports.book_create_post = [
 exports.book_delete_get = asyncHandler(async (req, res, next) => {
   // Get details of book and all instances (in parallel)
   const [book, allInstancesOfBook] = await Promise.all([
-    Book.findById(req.params.id).exec(),
-    BookInstance.find({ book: req.params.id }, "title summary").exec(),
+    Book.findById(req.params.id).populate("author").populate("genre").exec(),
+    BookInstance.find({ book: req.params.id }).exec(),
   ]);
 
   if (book === null) {
@@ -173,9 +174,14 @@ exports.book_delete_get = asyncHandler(async (req, res, next) => {
 exports.book_delete_post = asyncHandler(async (req, res, next) => {
   // Get details of book and all instances (in parallel)
   const [book, allInstancesOfBook] = await Promise.all([
-    Book.findById(req.params.id).exec(),
-    BookInstance.find({ book: req.params.id }, "title summary").exec(),
+    Book.findById(req.params.id).populate("author").populate("genre").exec(),
+    BookInstance.find({ book: req.params.id }).exec(),
   ]);
+
+  if (book === null) {
+    // No results.
+    res.redirect("/catalog/books");
+  }
 
   if (allInstancesOfBook.length > 0) {
     // Book has instances. Render in same way as for GET route.
@@ -196,7 +202,7 @@ exports.book_delete_post = asyncHandler(async (req, res, next) => {
 exports.book_update_get = asyncHandler(async (req, res, next) => {
   // Get book, authors and genres for form.
   const [book, allAuthors, allGenres] = await Promise.all([
-    Book.findById(req.params.id).populate("author").populate("genre").exec(),
+    Book.findById(req.params.id).populate("author").exec(),
     Author.find().sort({ family_name: 1 }).exec(),
     Genre.find().sort({ name: 1 }).exec(),
   ]);
@@ -279,7 +285,7 @@ exports.book_update_post = [
 
       // Mark our selected genres as checked.
       for (const genre of allGenres) {
-        if (book.genre.indexOf(genre._id) > -1) {
+        if (book.genre.includes(genre._id)) {
           genre.checked = "true";
         }
       }
